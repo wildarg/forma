@@ -67,6 +67,41 @@ internal fun Project.applyAppConfiguration(
     }
 }
 
+@Suppress("UnstableApiUsage")
+internal fun Project.applyApiConfiguration(
+    formaConfiguration: FormaConfiguration,
+    buildConfiguration: BuildConfiguration,
+    consumerMinificationFiles: Set<String>,
+    manifestPlaceholders: Map<String, Any>
+) {
+    the<LibraryExtension>().run {
+        compileSdkVersion(formaConfiguration.compileSdk)
+
+        defaultConfig.applyFrom(
+            formaConfiguration,
+            consumerMinificationFiles,
+            manifestPlaceholders
+        )
+
+        buildTypes.applyFrom(buildConfiguration)
+        compileOptions.applyFrom(formaConfiguration)
+    }
+}
+
+internal fun DefaultConfig.applyFrom(
+    formaConfiguration: FormaConfiguration,
+    consumerMinificationFiles: Set<String>,
+    manifestPlaceholders: Map<String, Any>
+) {
+    minSdkVersion(formaConfiguration.minSdk)
+    targetSdkVersion(formaConfiguration.targetSdk)
+    versionCode = formaConfiguration.versionCode
+    versionName = formaConfiguration.versionName
+
+    consumerProguardFiles(*consumerMinificationFiles.toTypedArray())
+    manifestPlaceholders(manifestPlaceholders)
+}
+
 internal fun DefaultConfig.applyFrom(
     formaConfiguration: FormaConfiguration,
     testInstrumentationRunnerClass: String,

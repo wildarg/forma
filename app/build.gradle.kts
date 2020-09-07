@@ -1,6 +1,7 @@
 android_binary(
     packageName = "com.stepango.blockme",
     projectDependencies = deps(
-        project(":root-library")
+        project(":root-library"),
+        project(":welcome-api")
     )
 )
